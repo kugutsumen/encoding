@@ -5,7 +5,7 @@
 // Package keyvalue implements the Key-Value Form Encoding as
 // specified by the OpenID Authentication 2.0 specifications.
 //
-//   http://openid.net/specs/openid-authentication-2_0.html#anchor4
+//   http://openid.net/specs/openid-authentication-2_0.html#rfc.section.4.1.1
 //
 // Key-Value Form encoding is used for signature calculation
 // and for direct responses to Relying Parties.
