@@ -5,7 +5,7 @@
 ## Overview
 
 Package Message implements the Key-Value Form Encoding as specified by
-the [OpenID Authentication 2.0 specifications][1].
+the [OpenID Authentication 2.0][1] specifications.
 
 Key-Value Form encoding is used for signature calculation and for direct
 responses to Relying Parties.
@@ -31,5 +31,5 @@ param to get an updated version, i.e. `go get -u ...`.
   - [keyvalue package docs][2]
 
 
-[1]:	http://openid.net/specs/openid-authentication-2_0.html
+[1]:  http://openid.net/specs/openid-authentication-2_0.html#rfc.section.4.1.1
 [2]:  http://godoc.org/github.com/kugutsumen/encoding/keyvalue
