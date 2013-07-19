@@ -1,4 +1,8 @@
-# encoding/keyvalue
+# Package keyvalue
+
+    import "github.com/kugutsumen/encoding/keyvalue"
+
+# Overview
 
 Package Message implements the Key-Value Form Encoding as specified by
 the [OpenID Authentication 2.0 specifications][1].
