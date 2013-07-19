@@ -7,14 +7,14 @@
 //
 //   http://openid.net/specs/openid-authentication-2_0.html#anchor4
 //
-// Key-Value Form encoding is used for signature calculation 
+// Key-Value Form encoding is used for signature calculation
 // and for direct responses to Relying Parties.
 //
-// A message in Key-Value form is a sequence of lines. 
-// Each line begins with a key, followed by a colon, and the value 
-// associated with the key. The line is terminated by a single 
+// A message in Key-Value form is a sequence of lines.
+// Each line begins with a key, followed by a colon, and the value
+// associated with the key. The line is terminated by a single
 // newline (UCS codepoint 10, "\n").
-// 
+//
 // Example:
 //
 //       mode:error
@@ -22,15 +22,16 @@
 package keyvalue
 
 import (
-  "fmt"
   "bytes"
+  "fmt"
   "strings"
   "unicode"
   "unicode/utf8"
 )
 
 // Colon rune.
-const colon = ':' 
+const colon = ':'
+
 // Newline string.
 const newline = "\n"
 
@@ -39,7 +40,7 @@ type Message map[string]string
 
 // Get gets the value associated with the given key.
 //
-// If there are no value associated with the key, 
+// If there are no value associated with the key,
 // Get returns the empty string.
 func (m Message) Get(key string) string {
   if m == nil {
@@ -63,9 +64,9 @@ func (m Message) Del(key string) {
 }
 
 // Validate Key-Value message
-// Additional characters, including whitespace, MUST NOT 
-// be added before or after the colon or newline. 
-// 
+// Additional characters, including whitespace, MUST NOT
+// be added before or after the colon or newline.
+//
 // The message MUST be encoded in UTF-8 to produce a byte string.
 func (m Message) Validate() error {
   for k, v := range m {
@@ -92,7 +93,7 @@ func (m Message) Validate() error {
     // Before the colon
     if r, _ := utf8.DecodeLastRuneInString(k); unicode.IsSpace(r) {
       return fmt.Errorf("whitespace at end of key \"%s\"", k)
-    }  
+    }
     // After the newline
     if r, _ := utf8.DecodeRuneInString(k); unicode.IsSpace(r) {
       return fmt.Errorf("whitespace at beginning of key \"%s\"", k)
@@ -123,14 +124,13 @@ func (v Message) String() string {
     n += len(k) + len(v) + utf8.RuneLen(colon) + len(newline)
   }
   buf.Grow(n)
-    
+
   for k, v := range v {
     buf.WriteString(k)
     buf.WriteRune(colon)
     buf.WriteString(v)
     buf.WriteString(newline)
   }
-    
+
   return buf.String()
 }
-

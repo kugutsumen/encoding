@@ -5,15 +5,15 @@ import (
 )
 
 type MessageTest struct {
-  m Message
+  m   Message
   out string
 }
 
-var MessageTests = []MessageTest {
+var MessageTests = []MessageTest{
   // Valid Message
   {Message{"foo": "bar"}, "foo:bar\n"},
   // nil Message
-  {nil , ""},
+  {nil, ""},
   // empty Message
   {Message{}, ""},
 }
@@ -27,11 +27,11 @@ func TestMessageString(t *testing.T) {
 }
 
 type MessageValidateTest struct {
-  m Message
+  m          Message
   expectedOk bool
 }
 
-var MessageValidateTests = []MessageValidateTest {
+var MessageValidateTests = []MessageValidateTest{
   // Valid Form
   {Message{"foo": "bar"}, true},
   // Empty Form
@@ -52,7 +52,6 @@ var MessageValidateTests = []MessageValidateTest {
   {Message{"foo\xff": "bar"}, false},
   // Non UTF-8 value
   {Message{"foo": "ba\xfer"}, false},
-
 }
 
 func TestMessageValidateString(t *testing.T) {
