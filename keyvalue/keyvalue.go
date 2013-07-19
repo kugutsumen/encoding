@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package Message implements the Key-Value Form Encoding as
+// Package keyvalue implements the Key-Value Form Encoding as
 // specified by the OpenID Authentication 2.0 specifications.
 //
 //   http://openid.net/specs/openid-authentication-2_0.html#anchor4
