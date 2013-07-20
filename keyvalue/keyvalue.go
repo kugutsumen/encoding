@@ -22,8 +22,10 @@
 package keyvalue
 
 import (
+  "bufio"
   "bytes"
   "fmt"
+  "io"
   "strings"
   "unicode"
   "unicode/utf8"
@@ -111,8 +113,8 @@ func (m Message) Validate() error {
 }
 
 // String returns the Key-Value Form Encoded message.
-func (v Message) String() string {
-  if v == nil || len(v) == 0 {
+func (m Message) String() string {
+  if m == nil || len(m) == 0 {
     return ""
   }
 
@@ -120,12 +122,12 @@ func (v Message) String() string {
   var n int
 
   // Preallocate buffer
-  for k, v := range v {
+  for k, v := range m {
     n += len(k) + len(v) + utf8.RuneLen(colon) + len(newline)
   }
   buf.Grow(n)
 
-  for k, v := range v {
+  for k, v := range m {
     buf.WriteString(k)
     buf.WriteRune(colon)
     buf.WriteString(v)
@@ -133,4 +135,14 @@ func (v Message) String() string {
   }
 
   return buf.String()
+}
+
+func (m Message) Write(w io.Writer) error {
+  var bw *bufio.Writer
+  if _, ok := w.(io.ByteWriter); !ok {
+    bw = bufio.NewWriter(w)
+    w = bw
+  }
+  _, err := io.WriteString(w, m.String())
+  return err
 }
