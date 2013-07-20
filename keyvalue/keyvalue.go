@@ -65,7 +65,7 @@ func (f Form) Del(key string) {
   delete(f, key)
 }
 
-// Validate Key-Value message
+// Validate Key-Value message.
 // Additional characters, including whitespace, MUST NOT
 // be added before or after the colon or newline.
 //
