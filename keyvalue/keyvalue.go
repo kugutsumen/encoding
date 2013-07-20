@@ -22,7 +22,6 @@
 package keyvalue
 
 import (
-  "bufio"
   "bytes"
   "fmt"
   "io"
@@ -138,11 +137,6 @@ func (f Form) String() string {
 }
 
 func (f Form) Write(w io.Writer) error {
-  var bw *bufio.Writer
-  if _, ok := w.(io.ByteWriter); !ok {
-    bw = bufio.NewWriter(w)
-    w = bw
-  }
   _, err := io.WriteString(w, f.String())
   return err
 }
