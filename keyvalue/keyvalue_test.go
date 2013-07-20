@@ -4,62 +4,62 @@ import (
   "testing"
 )
 
-type MessageTest struct {
-  m   Message
+type FormTest struct {
+  f   Form
   out string
 }
 
-var MessageTests = []MessageTest{
-  // Valid Message
-  {Message{"foo": "bar"}, "foo:bar\n"},
-  // nil Message
+var FormTests = []FormTest{
+  // Valid Form
+  {Form{"foo": "bar"}, "foo:bar\n"},
+  // nil Form
   {nil, ""},
-  // empty Message
-  {Message{}, ""},
+  // empty Form
+  {Form{}, ""},
 }
 
-func TestMessageString(t *testing.T) {
-  for _, tt := range MessageTests {
-    if s := tt.m.String(); s != tt.out {
-      t.Errorf(`%+v.String() = %s, want %s`, tt.m, s, tt.out)
+func TestFormString(t *testing.T) {
+  for _, tt := range FormTests {
+    if s := tt.f.String(); s != tt.out {
+      t.Errorf(`%+v.String() = %s, want %s`, tt.f, s, tt.out)
     }
   }
 }
 
-type MessageValidateTest struct {
-  m          Message
+type FormValidateTest struct {
+  f          Form
   expectedOk bool
 }
 
-var MessageValidateTests = []MessageValidateTest{
+var FormValidateTests = []FormValidateTest{
   // Valid Form
-  {Message{"foo": "bar"}, true},
+  {Form{"foo": "bar"}, true},
   // Empty Form
-  {Message{}, true},
+  {Form{}, true},
   // Key contains colon
-  {Message{"f" + string(colon) + "oo": "bar"}, false},
+  {Form{"f" + string(colon) + "oo": "bar"}, false},
   // Key contains newline
-  {Message{"f" + string(newline) + "oo": "bar"}, false},
+  {Form{"f" + string(newline) + "oo": "bar"}, false},
   // Space after newline
-  {Message{" foo": "bar"}, false},
+  {Form{" foo": "bar"}, false},
   // Space before colon
-  {Message{"foo ": "bar"}, false},
+  {Form{"foo ": "bar"}, false},
   // Space after colon
-  {Message{"foo": " bar"}, false},
+  {Form{"foo": " bar"}, false},
   // Space before newline
-  {Message{"foo": "bar "}, false},
+  {Form{"foo": "bar "}, false},
   // Non UTF-8 key
-  {Message{"foo\xff": "bar"}, false},
+  {Form{"foo\xff": "bar"}, false},
   // Non UTF-8 value
-  {Message{"foo": "ba\xfer"}, false},
+  {Form{"foo": "ba\xfer"}, false},
 }
 
-func TestMessageValidateString(t *testing.T) {
-  for _, tt := range MessageValidateTests {
-    err := tt.m.Validate()
+func TestFormValidateString(t *testing.T) {
+  for _, tt := range FormValidateTests {
+    err := tt.f.Validate()
     ok := err == nil
     if ok != tt.expectedOk {
-      t.Errorf("Expected valid =%v for %v; got %v (%v)", tt.expectedOk, tt.m, ok, err)
+      t.Errorf("Expected valid =%v for %v; got %v (%v)", tt.expectedOk, tt.f, ok, err)
     }
   }
 }

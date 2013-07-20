@@ -37,18 +37,18 @@ const colon = ':'
 // Newline string.
 const newline = "\n"
 
-// Message maps a string key to a string value.
-type Message map[string]string
+// Form maps a string key to a string value.
+type Form map[string]string
 
 // Get gets the value associated with the given key.
 //
 // If there are no value associated with the key,
 // Get returns the empty string.
-func (m Message) Get(key string) string {
-  if m == nil {
+func (f Form) Get(key string) string {
+  if f == nil {
     return ""
   }
-  v, ok := m[key]
+  v, ok := f[key]
   if !ok || len(v) == 0 {
     return ""
   }
@@ -56,13 +56,13 @@ func (m Message) Get(key string) string {
 }
 
 // Set sets the key to value. It replaces any existing value.
-func (m Message) Set(key, value string) {
-  m[key] = value
+func (f Form) Set(key, value string) {
+  f[key] = value
 }
 
 // Del deletes the value associated with key.
-func (m Message) Del(key string) {
-  delete(m, key)
+func (f Form) Del(key string) {
+  delete(f, key)
 }
 
 // Validate Key-Value message
@@ -70,8 +70,8 @@ func (m Message) Del(key string) {
 // be added before or after the colon or newline.
 //
 // The message MUST be encoded in UTF-8 to produce a byte string.
-func (m Message) Validate() error {
-  for k, v := range m {
+func (f Form) Validate() error {
+  for k, v := range f {
     // Empty value
     if len(v) == 0 {
       return fmt.Errorf("Empty value for key \"%s\"", k)
@@ -113,8 +113,8 @@ func (m Message) Validate() error {
 }
 
 // String returns the Key-Value Form Encoded message.
-func (m Message) String() string {
-  if m == nil || len(m) == 0 {
+func (f Form) String() string {
+  if f == nil || len(f) == 0 {
     return ""
   }
 
@@ -122,12 +122,12 @@ func (m Message) String() string {
   var n int
 
   // Preallocate buffer
-  for k, v := range m {
+  for k, v := range f {
     n += len(k) + len(v) + utf8.RuneLen(colon) + len(newline)
   }
   buf.Grow(n)
 
-  for k, v := range m {
+  for k, v := range f {
     buf.WriteString(k)
     buf.WriteRune(colon)
     buf.WriteString(v)
@@ -137,12 +137,12 @@ func (m Message) String() string {
   return buf.String()
 }
 
-func (m Message) Write(w io.Writer) error {
+func (f Form) Write(w io.Writer) error {
   var bw *bufio.Writer
   if _, ok := w.(io.ByteWriter); !ok {
     bw = bufio.NewWriter(w)
     w = bw
   }
-  _, err := io.WriteString(w, m.String())
+  _, err := io.WriteString(w, f.String())
   return err
 }
