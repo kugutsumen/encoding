@@ -26,6 +26,45 @@ func TestFormString(t *testing.T) {
   }
 }
 
+type SignedFormTest struct {
+  f   *SignedForm
+  // keys []string
+  out string
+}
+
+var SignedFormTests = []SignedFormTest{
+  // Valid Form
+  {&SignedForm{Form{"foo": "bar"}, []string{"foo",}}, prefix + "foo:bar\n"},
+  {&SignedForm{Form{"foo": "bar", "santa": "banta"}, 
+      []string{"santa", "foo"}}, prefix + "santa:banta\n" + prefix + "foo:bar\n" },
+  //    prefix + "santa:banta\n" + prefix + "foo:bar\n"},
+}
+
+func TestFormSignedString(t *testing.T) {
+  for _, tt := range SignedFormTests {
+    if s := tt.f.SignedString(); s != tt.out {
+      t.Errorf(`%+v.SignedString() = %s, want %s`, tt.f, s, tt.out)
+    }
+  }
+}
+
+var SignedFieldsTests = []SignedFormTest{
+  // Valid Form
+  {&SignedForm{Form{"foo": "bar"}, []string{"foo",}}, "foo"},
+  {&SignedForm{Form{"foo": "bar", "santa": "banta"}, 
+      []string{"santa", "foo"}}, "santa,foo"}, 
+  //    prefix + "santa:banta\n" + prefix + "foo:bar\n"},
+}
+
+func TestFormSignedFields(t *testing.T) {
+  for _, tt := range SignedFieldsTests {
+    if s := tt.f.SignedFields(); s != tt.out {
+      t.Errorf(`%+v.SignedFields() = %s, want %s`, tt.f, s, tt.out)
+    }
+  }
+}
+
+
 type FormValidateTest struct {
   f          Form
   expectedOk bool

@@ -33,8 +33,15 @@ import (
 // Colon rune.
 const colon = ':'
 
+// Comma rune.
+const comma = ','
+
 // Newline string.
 const newline = "\n"
+
+// OpenID prefix
+const prefix = "openid."
+
 
 // Form maps a string key to a string value.
 type Form map[string]string
@@ -135,8 +142,74 @@ func (f Form) String() string {
 
   return buf.String()
 }
-
 func (f Form) Write(w io.Writer) error {
   _, err := io.WriteString(w, f.String())
   return err
+}
+
+// Signed message in key-value form.
+type SignedForm struct {
+  Form
+  // List of fields to be signed without the "openid." prefix that the signature covers.
+  Fields  []string
+}
+
+var (
+  ErrMissingFields = fmt.Errorf("No fields to sign");
+  ErrEmptyForm = fmt.Errorf("Form is empty or values are missing.");
+)
+
+// Comma-separated list of signed fields
+func (s *SignedForm) SignedFields() string {
+  if len(s.Fields) == 0 {
+    return ""
+  }
+  var buf bytes.Buffer
+  var n int
+
+  for _, k := range s.Fields {
+    n += len(k)
+  }
+  n += utf8.RuneLen(comma) * (len(s.Fields) - 1)
+  buf.Grow(n)
+
+  for _, k := range s.Fields {
+    buf.WriteString(k)
+    if buf.Len() < n {
+      buf.WriteRune(comma)
+    }
+  }
+  return buf.String()
+}
+
+// Convert the list of key/value pairs to be signed to an octet string 
+// by encoding with Key-Value Form Encoding.
+func (s *SignedForm) SignedString() string {
+  f := s.Form 
+  if f == nil || len(f) == 0 {
+    return ""
+  }   
+  var buf bytes.Buffer
+  var n int
+
+  // Preallocate buffer
+  for _, k := range s.Fields {
+    v, ok := f[k]
+    // The list of keys to be signed MUST be part of the message.
+    if !ok || len(v) == 0 {
+      return ""
+    }
+    n += len(prefix) + len(k) + len(v) + utf8.RuneLen(colon) + len(newline)
+  }
+  buf.Grow(n)
+
+  // Iterate through the list of keys to be signed in the order they appear
+  for _, k := range s.Fields {
+    buf.WriteString(prefix)
+    buf.WriteString(k)
+    buf.WriteRune(colon)
+    buf.WriteString(f.Get(k))
+    buf.WriteString(newline)
+  }
+  return buf.String()
 }
